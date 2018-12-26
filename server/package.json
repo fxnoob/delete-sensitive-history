@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4",
-    "safe-browse": "^1.0.1"
+    "nraf": "1.0.0",
+    "safe-browse": "1.0.1"
   }
 }
