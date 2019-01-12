@@ -43,5 +43,9 @@
         "single"
       ]
     }
+  },
+  "dependencies": {
+    "@vipulbhj/clean-url": "1.0.0",
+    "nraf": "1.1.1"
   }
 }

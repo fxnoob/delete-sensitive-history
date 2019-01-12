@@ -1,21 +1,29 @@
-const SafeBrowse = require('safe-browse');
-const express = require('nraf');
-const app = express();
+const checkCleanUrl = require('@vipulbhj/clean-url');
+const nraf = require('nraf');
+const app = nraf();
 
-app.get('/', function (req, res) {
-  var url = req.query.url;
+app.get('/', (req, res) => {
+  const url = req.query.url;
   if( !url ) {
-    return res.end(JSON.stringify({"message": "url parameter is must"}));
+    res.json({"message": "url parameter is must"});
+    return res.end();
   }
-  var api = new SafeBrowse.Api("API Key");
-  api.lookup(url, function(error, data) {
-    if (error) {
-      console.error(error);
-      return res.end(JSON.stringify(error));
-    }
-    return res.end(JSON.stringify(data));
-  });
+  if(!checkCleanUrl(url)) {
+    res.json({
+       "message": "Url hosts pornographical content",
+       "cleanUrl" : false
+    });
+    return res.end();
+  } else {
+    res.json({
+        "message": "Url hosts no pornographical content",
+        "cleanUrl" : true
+    });
+    return res.end();
+  }
 });
+
+
 
 app.listen(process.env.PORT || 8080, () => {
 	console.log('Server Running');
