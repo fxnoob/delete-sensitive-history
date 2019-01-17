@@ -4,9 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build-popup": "webpack --progress --colors --config webpack-popup.config.js --mode=production",
     "build": "webpack --config webpack.config.js --mode=production",
     "babel": "babel src/index.js -d dist",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
   },
   "author": "",
   "license": "ISC",
@@ -22,10 +29,16 @@
     "json-loader": "^0.5.7",
     "raw-loader": "^1.0.0",
     "webpack": "^4.28.4",
-    "webpack-cli": "^3.2.1"
+    "webpack-cli": "^3.2.1",
+    "webpack-loader": "0.0.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1"
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "babel-core": "^7.0.0-bridge.0"
+    "babel-core": "^7.0.0-bridge.0",
+    "react": "^16.7.0",
+    "react-dom": "^16.7.0",
+    "webpack-notifier": "^1.7.0"
   }
 }
