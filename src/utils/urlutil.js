@@ -22,6 +22,49 @@ export default class urlUtil {
                 reject("DONOTDELETE");
         });
     };
+    deleteUrlInHistory(url) {
+        const that = this;
+        const removeUrlFromHistory = this.removeUrlFromHistory;
+        return new Promise((resolve, reject) => {
+            const hostname = that.getHostname(url);
+            const promise = that.cleanUrl(hostname);
+            promise.then((res) => {
+                return res;
+            })
+            .then((status) => {
+                return removeUrlFromHistory(url);
+            })
+            .then((re) => {
+                resolve(re);
+            })
+            .catch((e) => {
+                reject(e);
+            });
+        });
+    }
+    closeBlockedUrlTab(tab) {
+        const cleanUrl = this.cleanUrl;
+        return new Promise((resolve, reject) => {
+            var promise = cleanUrl(tab.url);
+            promise.then((res) => {
+                chrome.tabs.remove(tab.id, function() {
+                    resolve("done");
+                });
+            })
+            .catch((e) => {
+                console.log("tab's url is not in the blocked list");
+                reject("tab's url is not in the blocked list");
+            })
+        });
+    }
+    closeAllCurrentBlockedUrlTabs() {
+        const closeBlockedUrlTab= this.closeBlockedUrlTab;
+        chrome.tabs.query({}, (tabs) => {
+            tabs.map((tab) => {
+                return closeBlockedUrlTab(tab);
+            })
+        });
+    }
     getHostname(url) {
         console.log("gethostname" , url);
         var result = "";

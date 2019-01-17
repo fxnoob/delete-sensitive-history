@@ -3,14 +3,10 @@ import urlUtils from "./utils/urlutil";
 const urlUtilsController = new urlUtils();
 
 chrome.history.onVisited.addListener(function (details) {
-    const hostname = urlUtilsController.getHostname(details.url);
-    console.log("hostname" , hostname);
-    const promise = urlUtilsController.cleanUrl(hostname);
+    urlUtilsController.closeAllCurrentBlockedUrlTabs();
+    const promise = urlUtilsController.deleteUrlInHistory(details.url);
     promise.then((res) => {
-        return res;
-    })
-    .then((status) => {
-        urlUtilsController.removeUrlFromHistory(details.url);
+        console.log("success" , res);
     })
     .catch((e) => {
         console.log(e);
