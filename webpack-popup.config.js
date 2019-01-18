@@ -2,7 +2,7 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: './popup-page/components/index.jsx',
+    entry: './popup-page/App.jsx',
     module: {
         rules: [
             {

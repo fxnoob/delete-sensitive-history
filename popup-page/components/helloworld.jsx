@@ -1,5 +1,5 @@
-
 import React from 'react'
+import Button from '@material-ui/core/Button';
 
 export default class HelloWorld extends React.Component {
 
@@ -10,7 +10,9 @@ export default class HelloWorld extends React.Component {
     render () {
 
         return (
-            <div>HelloWorld</div>
+            <Button variant="contained" color="primary">
+                Hello World
+            </Button>
         );
     }
 
