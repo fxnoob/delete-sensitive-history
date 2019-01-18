@@ -2,26 +2,35 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: './popup-page/components/',
-    resolve: {
-        extensions: [".jsx"],
-    },
+    entry: './popup-page/components/index.jsx',
     module: {
         rules: [
             {
-                test: /popup-page\/components\.jsx$/,
+                test: /\.jsx$/,
                 exclude: /(node_modules|bower_components)/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['react']
-                    }
+                loader: 'babel-loader',
+                options: {
+                    presets: ['@babel/preset-react', '@babel/preset-env']
                 }
             }
         ],
     },
+    plugins: [
+        new CopyWebpackPlugin([
+            {
+                from: './popup-page/popup.html',
+                force: true
+            }
+        ], {})
+    ] ,
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.join(__dirname, 'dist'),
         filename: 'popup.bundle.js'
+    } ,
+    resolve: {
+        modules: [
+            "node_modules"
+        ],
+        extensions: [".js" , ".jsx"]
     }
 };
