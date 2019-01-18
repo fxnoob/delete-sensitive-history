@@ -44,6 +44,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-google-login": "^5.0.0",
     "react-hot-loader": "^4.6.3",
     "webpack-notifier": "^1.7.0"
   }

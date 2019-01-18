@@ -13,7 +13,10 @@ import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import SvgIcon from '@material-ui/core/SvgIcon';
-
+import { GoogleLogin } from 'react-google-login';
+const responseGoogle = (response) => {
+    console.log(response);
+}
 const styles = {
     root: {
         flexGrow: 1,
@@ -35,6 +38,13 @@ function HomeIcon(props) {
         </SvgIcon>
     );
 }
+function LoginIcon(props) {
+    return (
+        <SvgIcon {...props}>
+            <path d="M21 3.01H3c-1.1 0-2 .9-2 2V9h2V4.99h18v14.03H3V15H1v4.01c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98v-14c0-1.11-.9-2-2-2zM11 16l4-4-4-4v3H1v2h10v3z"/>
+        </SvgIcon>
+    );
+}
 class MenuAppBar extends React.Component {
     state = {
         auth: false,
@@ -52,7 +62,9 @@ class MenuAppBar extends React.Component {
     handleClose = () => {
         this.setState({ anchorEl: null });
     };
+    login() {
 
+    }
     render() {
         const { classes } = this.props;
         const { auth, anchorEl } = this.state;
@@ -75,9 +87,7 @@ class MenuAppBar extends React.Component {
                         </IconButton>
                         <Typography variant="h6" color="inherit" className={classes.grow}>
                         </Typography>
-                        {auth ?(<div>
-
-                        </div>):(
+                        {auth ?(
                             <div>
                                 <IconButton
                                     aria-owns={open ? 'menu-appbar' : undefined}
@@ -105,7 +115,22 @@ class MenuAppBar extends React.Component {
                                     <MenuItem onClick={this.handleClose}>Logout</MenuItem>
                                 </Menu>
                             </div>
-                        )}
+                        ):(<div>
+                            <IconButton
+                                aria-owns={open ? 'menu-appbar' : undefined}
+                                aria-haspopup="true"
+                                onClick={this.login}
+                                color="inherit"
+                            >
+                                <GoogleLogin
+                                    clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+                                    buttonText="Login"
+                                    onSuccess={responseGoogle}
+                                    onFailure={responseGoogle}
+                                />
+                            </IconButton>
+                        </div>)
+                        }
                     </Toolbar>
                 </AppBar>
             </div>
