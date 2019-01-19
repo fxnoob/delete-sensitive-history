@@ -5,30 +5,26 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import { GoogleLogin } from 'react-google-login';
+import oAuth from '../../src/utils/oauth';
+
+const oAuthController = new oAuth();
+
 const responseGoogle = (response) => {
     console.log(response);
 }
 const styles = {
     root: {
         flexGrow: 1,
-        width: 500 ,
-        minHeight: 300
+        height: 41
     },
     grow: {
         flexGrow: 1,
     },
     menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
     },
 };
 function HomeIcon(props) {
@@ -46,11 +42,16 @@ function LoginIcon(props) {
     );
 }
 class MenuAppBar extends React.Component {
+
     state = {
         auth: false,
         anchorEl: null,
     };
-
+    constructor(props) {
+        super(props);
+        this.login = this.login.bind(this);
+        this.logout = this.logout.bind(this);
+    }
     handleChange = event => {
         this.setState({ auth: event.target.checked });
     };
@@ -63,7 +64,16 @@ class MenuAppBar extends React.Component {
         this.setState({ anchorEl: null });
     };
     login() {
-
+        oAuthController.getUserContactsGroups().then((res)=> {
+            console.log(res);
+            this.setState({auth: true});
+        }).catch((e)=>{
+            console.log(e);
+            this.setState({auth: false});
+        })
+    }
+    logout() {
+        this.setState({auth: false});
     }
     render() {
         const { classes } = this.props;
@@ -71,7 +81,7 @@ class MenuAppBar extends React.Component {
         const open = Boolean(anchorEl);
 
         return (
-            <AppBar position="static">
+            <AppBar position="static" className={classes.root}>
                 <Toolbar>
                     <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
                         <HomeIcon/>
@@ -103,7 +113,7 @@ class MenuAppBar extends React.Component {
                                 onClose={this.handleClose}
                             >
                                 <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                                <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+                                <MenuItem onClick={this.logout}>Logout</MenuItem>
                             </Menu>
                         </div>
                     ):(<div>
@@ -113,12 +123,7 @@ class MenuAppBar extends React.Component {
                             onClick={this.login}
                             color="inherit"
                         >
-                            <GoogleLogin
-                                clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-                                buttonText="Login"
-                                onSuccess={responseGoogle}
-                                onFailure={responseGoogle}
-                            />
+                            Login
                         </IconButton>
                     </div>)
                     }
