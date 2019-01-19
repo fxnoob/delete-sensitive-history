@@ -29,16 +29,8 @@ module.exports = {
     },
     plugins: [
         new CopyWebpackPlugin([
-            {
-                from: './popup-page/popup.html',
-                force: true
-            }
-        ], {}) ,
-        new CopyWebpackPlugin([
-            {
-                from: './src/app/',
-                force: true
-            }
+            { from: './popup-page/popup.html', force: true } ,
+            { from: './src/app/', force: true }
         ], {})
     ] ,
     output: {
