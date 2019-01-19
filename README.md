@@ -6,7 +6,7 @@ A chrome extension to delete sensitive history automatically. No need to open th
 
 > run `npm install`
 
-> run `npm run build`
+> run `npm run install`
 
 > `dist` directory will be created.
 
