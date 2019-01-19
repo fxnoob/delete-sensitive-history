@@ -42,6 +42,6 @@ module.exports = {
             "./src/data" ,
             "node_modules"
         ],
-        extensions: [".js" , ".jsx"]
+        extensions: [".js" , ".jsx",".json"]
     }
 };

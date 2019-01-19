@@ -23,7 +23,7 @@
   ],
   "oauth2": {
     "client_id": "546869382919-77ctntvngog3iegtrfifnqbgi5llft8n.apps.googleusercontent.com",
-    "scopes": [""]
+    "scopes": ["https://www.googleapis.com/auth/contacts.readonly"]
   },
   "browser_action": {
     "default_icon": {
