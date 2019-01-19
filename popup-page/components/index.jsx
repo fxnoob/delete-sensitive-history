@@ -1,19 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import { GoogleLogin } from 'react-google-login';
+import Db from "../../src/utils/db";
+
+import Header from './header';
 const responseGoogle = (response) => {
     console.log(response);
 }
@@ -72,67 +63,7 @@ class MenuAppBar extends React.Component {
 
         return (
             <div className={classes.root}>
-                {/*<FormGroup>*/}
-                    {/*<FormControlLabel*/}
-                        {/*control={*/}
-                            {/*<Switch checked={auth} onChange={this.handleChange} aria-label="LoginSwitch" />*/}
-                        {/*}*/}
-                        {/*label={auth ? 'Logout' : 'Login'}*/}
-                    {/*/>*/}
-                {/*</FormGroup>*/}
-                <AppBar position="static">
-                    <Toolbar>
-                        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-                            <HomeIcon/>
-                        </IconButton>
-                        <Typography variant="h6" color="inherit" className={classes.grow}>
-                        </Typography>
-                        {auth ?(
-                            <div>
-                                <IconButton
-                                    aria-owns={open ? 'menu-appbar' : undefined}
-                                    aria-haspopup="true"
-                                    onClick={this.handleMenu}
-                                    color="inherit"
-                                >
-                                    <AccountCircle />
-                                </IconButton>
-                                <Menu
-                                    id="menu-appbar"
-                                    anchorEl={anchorEl}
-                                    anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    open={open}
-                                    onClose={this.handleClose}
-                                >
-                                    <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                                    <MenuItem onClick={this.handleClose}>Logout</MenuItem>
-                                </Menu>
-                            </div>
-                        ):(<div>
-                            <IconButton
-                                aria-owns={open ? 'menu-appbar' : undefined}
-                                aria-haspopup="true"
-                                onClick={this.login}
-                                color="inherit"
-                            >
-                                <GoogleLogin
-                                    clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
-                                    buttonText="Login"
-                                    onSuccess={responseGoogle}
-                                    onFailure={responseGoogle}
-                                />
-                            </IconButton>
-                        </div>)
-                        }
-                    </Toolbar>
-                </AppBar>
+                 <Header data={1}/>
             </div>
         );
     }

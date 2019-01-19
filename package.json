@@ -5,10 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --hot",
-    "build-popup": "webpack --progress --colors --config webpack-popup.config.js --mode=production",
-    "build": "webpack --config webpack.config.js --mode=production",
-    "install": "npm run build && npm run build-popup",
-    "babel": "babel src/index.js -d dist",
+    "build": "webpack --colors --config webpack.config.js --mode=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -41,6 +38,7 @@
     "@material-ui/core": "^3.9.0",
     "@material-ui/icons": "^3.0.2",
     "babel-core": "^7.0.0-bridge.0",
+    "dotenv": "^6.2.0",
     "prop-types": "^15.6.2",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
