@@ -64,16 +64,20 @@ class MenuAppBar extends React.Component {
         this.setState({ anchorEl: null });
     };
     login() {
+        const that = this;
         oAuthController.getUserContactsGroups().then((res)=> {
             console.log(res);
-            this.setState({auth: true});
+            that.props.isLogin(true);
+            that.setState({auth: true});
         }).catch((e)=>{
             console.log(e);
-            this.setState({auth: false});
+            that.props.isLogin(false);
+            that.setState({auth: false});
         })
     }
     logout() {
-        this.setState({auth: false});
+        this.props.isLogin(false);
+        this.setState({auth: false})
     }
     render() {
         const { classes } = this.props;
@@ -123,7 +127,7 @@ class MenuAppBar extends React.Component {
                             onClick={this.login}
                             color="inherit"
                         >
-                            Login
+                            Login with Google
                         </IconButton>
                     </div>)
                     }

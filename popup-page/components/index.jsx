@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import Db from "../../src/utils/db";
-
+import Home from "./home";
 import Header from './header';
 const responseGoogle = (response) => {
     console.log(response);
@@ -41,7 +41,11 @@ class MenuAppBar extends React.Component {
         auth: false,
         anchorEl: null,
     };
+    constructor(props){
+        super(props);
+        this.isLogin = this.isLogin.bind(this);
 
+    }
     handleChange = event => {
         this.setState({ auth: event.target.checked });
     };
@@ -56,6 +60,9 @@ class MenuAppBar extends React.Component {
     login() {
 
     }
+    isLogin(authStat) {
+        this.setState({auth: authStat});
+    }
     render() {
         const { classes } = this.props;
         const { auth, anchorEl } = this.state;
@@ -63,7 +70,8 @@ class MenuAppBar extends React.Component {
 
         return (
             <div className={classes.root}>
-                 <Header data={1}/>
+                 <Header data={1} isLogin={this.isLogin}/>
+                 <Home isLogin={this.state.auth}/>
             </div>
         );
     }

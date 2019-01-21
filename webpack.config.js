@@ -9,7 +9,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.jsx$/,
+                test: /\.((jsx)|(jpg))$/,
                 exclude: /(node_modules|bower_components)/,
                 loader: 'babel-loader',
                 options: {
@@ -17,9 +17,18 @@ module.exports = {
                 }
             } ,
             {
-                test: /src\.m?js$/,
+                test: /src\.m?((js)|(jpg))$/,
                 use: {
                     loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            },
+            {
+                test: /src\.m?((js)|(jpg))$/,
+                use: {
+                    loader: 'file-loader',
                     options: {
                         presets: ['@babel/preset-env']
                     }
@@ -42,6 +51,6 @@ module.exports = {
             "./src/data" ,
             "node_modules"
         ],
-        extensions: [".js" , ".jsx",".json"]
+        extensions: [".js" , ".jsx",".json",".jpg"]
     }
 };
