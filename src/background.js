@@ -28,4 +28,4 @@ chrome.history.onVisited.addListener(function (details) {
         console.log(e);
     });
 });
-chrome.browserAction.setBadgeText({text: 'CHALAK'});
+chrome.browserAction.setBadgeText({text: 'Im'});
