@@ -12,7 +12,7 @@ const styles = {
     root: {
         flexGrow: 1,
         width: 500 ,
-        minHeight: 300
+        height: 300
     },
     grow: {
         flexGrow: 1,
@@ -38,7 +38,7 @@ function LoginIcon(props) {
 }
 class MenuAppBar extends React.Component {
     state = {
-        auth: false,
+        auth: true,
         anchorEl: null,
     };
     constructor(props){
