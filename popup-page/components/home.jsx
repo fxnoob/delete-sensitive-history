@@ -56,6 +56,7 @@ export class Home extends React.Component {
         urlUtilController.getCurrentOpenedTabHostName()
         .then((res)=>{
             if(!this.state.checkBox) {
+                console.log("checkbox not checked" , this.state.checkBox);
                 let putData = {};
                 putData[res] = "";
                 dBController.set(putData).then((resss)=>{

@@ -20,6 +20,7 @@ dbController.get("isFirstTimeLoad").then((res) => {
 chrome.history.onVisited.addListener(function (details) {
    // urlUtilsController.closeAllCurrentBlockedUrlTabs();
     const promise = urlUtilsController.deleteUrlInHistory(details.url);
+    console.log(details.url);
     promise.then((res) => {
         console.log("success" , res);
     })

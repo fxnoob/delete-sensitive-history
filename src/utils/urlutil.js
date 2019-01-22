@@ -18,9 +18,12 @@ export default class urlUtil {
     }
     cleanUrl(url) {
         return new Promise((resolve, reject) => {
-            const dbPromise = dbController.get(this.getHostname(url));
+            console.log("gethost",url,this.getHostname(url));
+            const dbPromise = dbController.get(url);
             dbPromise.then((db_res)=>{
-                if(db_res)
+                console.log("cleanUrl",db_res);
+                let key = Object.keys(db_res);
+                if(key.length>0)
                     resolve("DELETE");
                 else
                     reject("DONOTDELETE");
@@ -28,16 +31,13 @@ export default class urlUtil {
         });
     };
     deleteUrlInHistory(url) {
-        const that = this;
-        const removeUrlFromHistory = this.removeUrlFromHistory;
         return new Promise((resolve, reject) => {
-            const hostname = that.getHostname(url);
-            const promise = that.cleanUrl(hostname);
+            const promise = this.cleanUrl(this.getHostname(url));
             promise.then((res) => {
                 return res;
             })
             .then((status) => {
-                return removeUrlFromHistory(url);
+                return this.removeUrlFromHistory(url);
             })
             .then((re) => {
                 resolve(re);
