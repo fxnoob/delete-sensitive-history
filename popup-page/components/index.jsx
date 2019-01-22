@@ -77,8 +77,8 @@ class MenuAppBar extends React.Component {
         return (
             <div className={classes.root}>
                  <Header data={1} isLogin={this.isLogin}/>
-                 {/*<Demo/>*/}
                  <Home isLogin={this.state.auth}/>
+                 <Demo/>
             </div>
         );
     }
