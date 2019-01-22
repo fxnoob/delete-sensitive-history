@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import Db from "../../src/utils/db";
-import Demo from "./demo";
+import Particle from "./particle";
 import Home from "./home";
 import Header from './header';
 const dbController = new Db();
@@ -78,7 +78,7 @@ class MenuAppBar extends React.Component {
             <div className={classes.root}>
                  <Header data={1} isLogin={this.isLogin}/>
                  <Home isLogin={this.state.auth}/>
-                 <Demo/>
+                 <Particle/>
             </div>
         );
     }
