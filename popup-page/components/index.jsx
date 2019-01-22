@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import Db from "../../src/utils/db";
+import * as JsonData from "../../src/data/websites";
+
 import Home from "./home";
 import Header from './header';
+const dbController = new Db();
 const responseGoogle = (response) => {
     console.log(response);
 }
@@ -41,6 +44,10 @@ class MenuAppBar extends React.Component {
         auth: true,
         anchorEl: null,
     };
+    componentWillMount() {
+
+    }
+
     constructor(props){
         super(props);
         this.isLogin = this.isLogin.bind(this);

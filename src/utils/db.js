@@ -9,7 +9,7 @@ export default class Db {
     set(params) {
         return new Promise((resolve, reject) => {
             try {
-                chrome.storage.sync.set(params, function(){
+                    chrome.storage.sync.set(params, function(){
                     resolve(params);
                 });
             }
@@ -25,7 +25,7 @@ export default class Db {
     get(params) {
         return new Promise((resolve, reject) => {
             try {
-                chrome.storage.local.get(params, function(items){
+                chrome.storage.sync.get(params, function(items){
                     resolve(items);
                 });
             }
@@ -33,5 +33,21 @@ export default class Db {
                 reject(e);
             }
         });
+    }
+    /*
+    * delete key from db
+    * input - [key1,key2] or string
+    * */
+    remove(key_str){
+        return new Promise((resolve, reject) => {
+            try{
+                chrome.storage.sync.remove(key_str,(res)=>{
+                    resolve(key_str);
+                });
+            }
+            catch (e) {
+                reject(e);
+            }
+        })
     }
 }

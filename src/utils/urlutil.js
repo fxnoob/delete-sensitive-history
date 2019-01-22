@@ -1,4 +1,7 @@
 import * as JsonData from "../data/websites";
+import dB from "./db";
+
+const dbController = new dB();
 
 export default class urlUtil {
     removeUrlFromHistory(url) {
@@ -15,11 +18,13 @@ export default class urlUtil {
     }
     cleanUrl(url) {
         return new Promise((resolve, reject) => {
-            var blocked_websites = JsonData.blocked_sites;
-            if(url in blocked_websites)
-                resolve("DELETE");
-            else
-                reject("DONOTDELETE");
+            const dbPromise = dbController.get(this.getHostname(url));
+            dbPromise.then((db_res)=>{
+                if(db_res)
+                    resolve("DELETE");
+                else
+                    reject("DONOTDELETE");
+            });
         });
     };
     deleteUrlInHistory(url) {
@@ -74,4 +79,17 @@ export default class urlUtil {
         var len = host.length;
         return host[len-2];
     };
+    getCurrentOpenedTabHostName() {
+        const that = this;
+        return new Promise((resolve, reject) => {
+            try {
+                chrome.tabs.query({active: true, currentWindow: true}, (tabs)=>{
+                    resolve(that.getHostname(tabs[0].url));
+                });
+            }
+            catch (e) {
+                reject(e);
+            }
+        });
+    }
 };
