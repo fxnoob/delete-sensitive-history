@@ -49,7 +49,7 @@ export default class urlUtil {
         return new Promise((resolve, reject) => {
             that.cleanUrl(that.getHostname(tab.url)).then((res) => {
                 chrome.tabs.remove(tab.id, ()=> {
-                    resolve("done");
+                    resolve(tab.url);
                 });
             })
             .catch((e) => {
@@ -59,12 +59,23 @@ export default class urlUtil {
         });
     }
     closeAllCurrentBlockedUrlTabs() {
-        const closeBlockedUrlTab= this.closeBlockedUrlTab;
         chrome.tabs.query({}, (tabs) => {
-           return  tabs.map((tab) => {
-                 this.closeBlockedUrlTab(tab);
-            })
+            let urls_list =  tabs.map(async (tab) => {
+                 return this.closeBlockedUrlTab(tab);
+            });
+            dbController.set({restore_tabs_url_list: urls_list});
         });
+    }
+    restoreAllClosedwithCloseAllTabs() {
+        dbController.get("restore_tabs_url_list")
+        .then((urls)=>{
+            urls.map(url=>{
+                chrome.tabs.create({'url': url}, (tab) => {});
+            });
+        })
+        .catch((e)=>{
+            console.log(e);
+        })
     }
     getHostname(url) {
         var result = "";

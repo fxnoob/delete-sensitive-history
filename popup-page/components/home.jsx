@@ -126,6 +126,21 @@ export class Home extends React.Component {
                       </FormGroup>
                   </Typography>
               </Paper>
+              <Divider variant="middle" />
+              <Paper elevation={1}  className={classes.root}>
+                  <Typography  variant="h5" component="h5">
+                      <FormGroup row>
+                          <FormControlLabel
+                              control={
+                                  <Button variant="outlined" onClick={()=>urlUtilController.restoreAllClosedwithCloseAllTabs()} color="secondary" className={classes.button}>
+                                      Restore closed tabs
+                                  </Button>
+                              }
+                              label="Close all tabs that are in hidden mode."
+                          />
+                      </FormGroup>
+                  </Typography>
+              </Paper>
           </div>):(
               <div>
                   <h2>Not logged in </h2>
