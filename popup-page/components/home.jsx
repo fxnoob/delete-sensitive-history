@@ -5,11 +5,11 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import {withStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 
-import urlUtil from "../../src/utils/urlutil";
-import dB from  "../../src/utils/db";
+import urlUtil from '../../src/utils/urlutil';
+import dB from '../../src/utils/db';
 
 const urlUtilController = new urlUtil();
 const dBController = new dB();
@@ -43,8 +43,19 @@ export class Home extends React.Component {
         this.handleIncludeUrlChange = this.handleIncludeUrlChange.bind(this);
     }
     componentDidMount() {
-        urlUtilController.getCurrentOpenedTabHostName().then((res)=>{
-            if(res)
+        urlUtilController.getCurrentOpenedTabHostName()
+        .then((url)=>{
+            console.log(url);
+            return dBController.get(urlUtilController.getHostname(url));
+        })
+        .then((res)=>{
+            console.log("getCurrentOpenedTabHostName",res);
+            const key = Object.keys(res);
+            return (key.length > 0) ? 1 : 0;
+        })
+        .then((res)=>{
+            console.log(res);
+            if(res===1)
                 this.setState({checkBox: true, checkBoxLabelValue: "This Domain is in Hidden mode"});
             else
                 this.setState({checkBox: false, checkBoxLabelValue: "Select this domain to hide from history."});
@@ -55,14 +66,14 @@ export class Home extends React.Component {
     handleIncludeUrlChange() {
         urlUtilController.getCurrentOpenedTabHostName()
         .then((res)=>{
-            if(!this.state.checkBox) {
+            if(this.state.checkBox === false) {
                 console.log("checkbox not checked" , this.state.checkBox);
                 let putData = {};
                 putData[res] = "";
                 dBController.set(putData).then((resss)=>{
                     console.log(resss);
                     const checkBoxVal = this.state.checkBox;
-                    let checkBoxLabel = !checkBoxVal?"This Domain is in Hidden mode":"Select this domain to hide from history.";
+                    let checkBoxLabel = (checkBoxVal===false)?"This Domain is in Hidden mode":"Select this domain to hide from history.";
                     this.setState({checkBox: !this.state.checkBox , checkBoxLabelValue: checkBoxLabel});
                 }).catch((ee)=>{
 
@@ -71,7 +82,7 @@ export class Home extends React.Component {
             else {
                 dBController.remove(res).then((res_str)=>{
                     console.log("remove",res);
-                    this.setState({checkBox: !this.state.checkBox});
+                    this.setState({checkBox: false,checkBoxLabelValue: "Select this domain to hide from history."});
                 })
             }
         }).catch((e)=>{
@@ -106,7 +117,7 @@ export class Home extends React.Component {
                       <FormGroup row>
                           <FormControlLabel
                               control={
-                                  <Button variant="outlined" color="secondary" className={classes.button}>
+                                  <Button variant="outlined" onClick={()=>urlUtilController.closeAllCurrentBlockedUrlTabs()} color="secondary" className={classes.button}>
                                       Close All
                                   </Button>
                               }

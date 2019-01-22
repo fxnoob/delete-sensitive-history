@@ -1,6 +1,4 @@
-import * as JsonData from "../data/websites";
 import dB from "./db";
-
 const dbController = new dB();
 
 export default class urlUtil {
@@ -16,12 +14,10 @@ export default class urlUtil {
             }
         });
     }
-    cleanUrl(url) {
+    cleanUrl(domain) {
         return new Promise((resolve, reject) => {
-            console.log("gethost",url,this.getHostname(url));
-            const dbPromise = dbController.get(url);
+            const dbPromise = dbController.get(domain);
             dbPromise.then((db_res)=>{
-                console.log("cleanUrl",db_res);
                 let key = Object.keys(db_res);
                 if(key.length>0)
                     resolve("DELETE");
@@ -48,11 +44,11 @@ export default class urlUtil {
         });
     }
     closeBlockedUrlTab(tab) {
-        const cleanUrl = this.cleanUrl;
+        const that = this;
+        console.log(tab.url);
         return new Promise((resolve, reject) => {
-            var promise = cleanUrl(tab.url);
-            promise.then((res) => {
-                chrome.tabs.remove(tab.id, function() {
+            that.cleanUrl(that.getHostname(tab.url)).then((res) => {
+                chrome.tabs.remove(tab.id, ()=> {
                     resolve("done");
                 });
             })
@@ -65,13 +61,12 @@ export default class urlUtil {
     closeAllCurrentBlockedUrlTabs() {
         const closeBlockedUrlTab= this.closeBlockedUrlTab;
         chrome.tabs.query({}, (tabs) => {
-            tabs.map((tab) => {
-                return closeBlockedUrlTab(tab);
+           return  tabs.map((tab) => {
+                 this.closeBlockedUrlTab(tab);
             })
         });
     }
     getHostname(url) {
-        console.log("gethostname" , url);
         var result = "";
         var l = document.createElement("a");
         l.href = url;
@@ -80,11 +75,10 @@ export default class urlUtil {
         return host[len-2];
     };
     getCurrentOpenedTabHostName() {
-        const that = this;
         return new Promise((resolve, reject) => {
             try {
-                chrome.tabs.query({active: true, currentWindow: true}, (tabs)=>{
-                    resolve(that.getHostname(tabs[0].url));
+                chrome.tabs.query({active: true, currentWindow: true }, (tabs)=>{
+                    resolve(this.getHostname(tabs[0].url));
                 });
             }
             catch (e) {
