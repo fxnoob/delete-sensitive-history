@@ -44,9 +44,9 @@ export class Home extends React.Component {
     }
     componentDidMount() {
         urlUtilController.getCurrentOpenedTabHostName()
-        .then((url)=>{
-            console.log(url);
-            return dBController.get(urlUtilController.getHostname(url));
+        .then((domain)=>{
+            console.log(domain);
+            return dBController.get(domain);
         })
         .then((res)=>{
             console.log("getCurrentOpenedTabHostName",res);
