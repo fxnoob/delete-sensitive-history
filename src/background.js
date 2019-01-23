@@ -28,4 +28,20 @@ chrome.history.onVisited.addListener(function (details) {
         console.log(e);
     });
 });
-chrome.browserAction.setBadgeText({text: '∞'});
+
+chrome.tabs.onActivated.addListener((activeTabDetail)=>{
+    console.log(activeTabDetail);
+    chrome.tabs.get(activeTabDetail.tabId , (tab) => {
+        dbController.get(urlUtilsController.getHostname(tab.url)).then((res)=>{
+            const key = Object.keys(res);
+            if(key.length>0)
+                chrome.browserAction.setBadgeText({text: '♥'});
+            else
+                chrome.browserAction.setBadgeText({text: ''});
+        }).catch((e)=>{
+            console.log("else ",e);
+            chrome.browserAction.setBadgeText({text: ''});
+        })
+    });
+
+});
