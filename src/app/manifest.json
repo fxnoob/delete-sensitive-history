@@ -1,9 +1,8 @@
 {
-  "name": "__MSG_appName__",
+  "name": "Incognito Mode",
   "version": "0.0.1",
-  "key": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiGOxmtLLktIuFpZaIPsz\nacv3b4WdHmqynIkhp58fMBsx/ADqe9zxQkj0fWWUa95uY4eenIW2OmkaE+IymbHu\niW1dCUfujKdqGp7Ui1LxfYifN1OdlDQ2WwxjFMymHnH89MFry07jk8c5yBpoZixx\n9/877k9JcMa9DI4230xVv7pmNVtlsIi7vJd+LQAmI1JtqEHjDv0ovWHffkvno5Gm\n3uTk6Deu/ZOtB9llEyRKyzSCYfq+ZHC0B6UFzOQyeszVvY5ip5DVP2TvUDjGS0fo\ntSJ5UqBOIXiCfISL9V8Ai4mjjDPDD+RMHACFgXTUX0uDzSllsArDg4iBCDWzNelW\n1wIDAQAB\n-----END PUBLIC KEY-----\n",
   "manifest_version": 2,
-  "description": "__MSG_appDescription__",
+  "description": "A chrome extension to delete sensitive history automatically. No need to open the url in incognito.",
   "icons": {
     "16": "images/icon-16.png",
     "128": "images/icon-128.png"
@@ -15,22 +14,16 @@
     ]
   },
   "permissions": [
-    "identity",
     "storage",
     "history" ,
     "webNavigation" ,
     "*://*/*"
   ],
-  "oauth2": {
-    "client_id": "546869382919-77ctntvngog3iegtrfifnqbgi5llft8n.apps.googleusercontent.com",
-    "scopes": ["https://www.googleapis.com/auth/contacts.readonly"]
-  },
   "browser_action": {
     "default_icon": {
       "32": "images/icon-32.png"
     },
-    "default_title": "history remover",
+    "default_title": "Incognito Mode",
     "default_popup": "popup.html"
-  },
-  "content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'"
+  }
 }

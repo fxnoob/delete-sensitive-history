@@ -94,7 +94,7 @@ export class Home extends React.Component {
         return(
           this.props.isLogin ?(
           <div>
-              <h2>Hi, dear user.</h2>
+              <h2>Be safe.</h2>
               <Paper elevation={1} className={classes.root}>
                   <Typography variant="h5" component="h5">
                       <FormGroup row>

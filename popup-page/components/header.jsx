@@ -5,13 +5,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import SvgIcon from '@material-ui/core/SvgIcon';
-import oAuth from '../../src/utils/oauth';
-
-const oAuthController = new oAuth();
 
 const styles = {
     root: {
@@ -39,36 +33,8 @@ class MenuAppBar extends React.Component {
     };
     constructor(props) {
         super(props);
-        this.login = this.login.bind(this);
-        this.logout = this.logout.bind(this);
     }
-    handleChange = event => {
-        this.setState({ auth: event.target.checked });
-    };
 
-    handleMenu = event => {
-        this.setState({ anchorEl: event.currentTarget });
-    };
-
-    handleClose = () => {
-        this.setState({ anchorEl: null });
-    };
-    login() {
-        const that = this;
-        oAuthController.getUserContactsGroups().then((res)=> {
-            console.log(res);
-            that.props.isLogin(true);
-            that.setState({auth: true});
-        }).catch((e)=>{
-            console.log(e);
-            that.props.isLogin(false);
-            that.setState({auth: false});
-        })
-    }
-    logout() {
-        this.props.isLogin(false);
-        this.setState({auth: false})
-    }
     render() {
         const { classes } = this.props;
         const { auth, anchorEl } = this.state;
@@ -82,45 +48,6 @@ class MenuAppBar extends React.Component {
                     </IconButton>
                     <Typography variant="h6" color="inherit" className={classes.grow}>
                     </Typography>
-                    {auth ?(
-                        <div>
-                            <IconButton
-                                aria-owns={open ? 'menu-appbar' : undefined}
-                                aria-haspopup="true"
-                                onClick={this.handleMenu}
-                                color="inherit"
-                            >
-                                <AccountCircle />
-                            </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={open}
-                                onClose={this.handleClose}
-                            >
-                                <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                                <MenuItem onClick={this.logout}>Logout</MenuItem>
-                            </Menu>
-                        </div>
-                    ):(<div>
-                        <IconButton
-                            aria-owns={open ? 'menu-appbar' : undefined}
-                            aria-haspopup="true"
-                            onClick={this.login}
-                            color="inherit"
-                        >
-                            Login with Google
-                        </IconButton>
-                    </div>)
-                    }
                 </Toolbar>
             </AppBar>
         );

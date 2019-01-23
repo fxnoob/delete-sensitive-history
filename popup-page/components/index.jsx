@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import Particle from "./particle";
 import Home from "./home";
 import Header from './header';
 const styles = {
@@ -24,15 +23,9 @@ class MenuAppBar extends React.Component {
         auth: true,
         anchorEl: null,
     };
-    componentWillMount() {
-
-    }
     constructor(props){
         super(props);
         this.isLogin = this.isLogin.bind(this);
-
-    }
-    login() {
 
     }
     isLogin(authStat) {
@@ -44,7 +37,6 @@ class MenuAppBar extends React.Component {
             <div className={classes.root}>
                  <Header data={1} isLogin={this.isLogin}/>
                  <Home isLogin={this.state.auth}/>
-                 <Particle/>
             </div>
         );
     }
