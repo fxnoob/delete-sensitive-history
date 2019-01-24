@@ -88,13 +88,18 @@ export class Home extends React.Component {
         }).catch((e)=>{
             alert(e);
         });
+        if(!this.state.checkBox)
+            chrome.browserAction.setBadgeText({text: '♥'});
+        else
+            chrome.browserAction.setBadgeText({text: ''});
+
     }
     render() {
         const { classes } = this.props;
         return(
           this.props.isLogin ?(
           <div>
-              <h2>Be safe.</h2>
+              <h2>No need to open the url in incognito. ;)</h2>
               <Paper elevation={1} className={classes.root}>
                   <Typography variant="h5" component="h5">
                       <FormGroup row>
