@@ -7,7 +7,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import {withStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
-
 import urlUtil from '../../src/utils/urlutil';
 import dB from '../../src/utils/db';
 
@@ -28,21 +27,22 @@ const styles = theme => ({
     },
     button: {
         margin: theme.spacing.unit,
+        whiteSpace: 'nowrap'
     }
 });
 export class Home extends React.Component {
 
     state = {
-        auth: false,
         checkBox: false,
-        checkBoxLabelValue: "Select this url to hide from history."
+        checkBoxLabelValue: "Select this url to hide from history.",
+        isAllclosedTabsSet: false
     };
     constructor(props){
         super(props);
-        this.state.isLogin = this.props.isLogin;
         this.handleIncludeUrlChange = this.handleIncludeUrlChange.bind(this);
     }
     componentDidMount() {
+        //check if current tab is in hidden mode if yes then get settings
         urlUtilController.getCurrentOpenedTabHostName()
         .then((domain)=>{
             console.log(domain);
@@ -61,6 +61,14 @@ export class Home extends React.Component {
                 this.setState({checkBox: false, checkBoxLabelValue: "Select this domain to hide from history."});
         }).catch((e)=>{
             alert(e);
+        });
+        //check if there is any tabs session is in the storage
+        dBController.get("restore_tabs_url_list").then((dbres)=>{
+            console.log("cdm",dbres);
+            if(dbres.restore_tabs_url_list.length>0)
+                this.setState({isAllclosedTabsSet: true});
+        }).catch((e)=>{
+            console.log(e);
         });
     }
     handleIncludeUrlChange() {
@@ -97,7 +105,6 @@ export class Home extends React.Component {
     render() {
         const { classes } = this.props;
         return(
-          this.props.isLogin ?(
           <div>
               <h2>No need to open the url in incognito. ;)</h2>
               <Paper elevation={1} className={classes.root}>
@@ -132,7 +139,7 @@ export class Home extends React.Component {
                   </Typography>
               </Paper>
               <Divider variant="middle" />
-              <Paper elevation={1}  className={classes.root}>
+              {this.state.isAllclosedTabsSet && <Paper elevation={1}  className={classes.root}>
                   <Typography  variant="h5" component="h5">
                       <FormGroup row>
                           <FormControlLabel
@@ -141,24 +148,12 @@ export class Home extends React.Component {
                                       Restore closed tabs
                                   </Button>
                               }
-                              label="Close all tabs that are in hidden mode."
+                              label="Restore all tabs that were closed by 'Close all' tab"
                           />
                       </FormGroup>
                   </Typography>
-              </Paper>
-          </div>):(
-              <div>
-                  <h2>Not logged in </h2>
-                  <Paper elevation={1}  className={classes.root}>
-                      <Typography variant="h5" component="h3">
-                          This is a sheet of paper.
-                      </Typography>
-                      <Typography component="p">
-                          Paper can be used to build surface or other elements for your application.
-                      </Typography>
-                  </Paper>
-              </div>
-          )
+              </Paper>}
+          </div>
         );
     }
 }

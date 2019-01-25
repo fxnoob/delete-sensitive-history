@@ -6,7 +6,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
-
 const styles = {
     root: {
         flexGrow: 1,
@@ -27,18 +26,11 @@ function HomeIcon(props) {
 }
 class MenuAppBar extends React.Component {
 
-    state = {
-        auth: false,
-        anchorEl: null,
-    };
     constructor(props) {
         super(props);
     }
-
     render() {
         const { classes } = this.props;
-        const { auth, anchorEl } = this.state;
-        const open = Boolean(anchorEl);
 
         return (
             <AppBar position="static" className={classes.root}>

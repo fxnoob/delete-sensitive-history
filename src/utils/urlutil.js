@@ -53,7 +53,6 @@ export default class urlUtil {
                 });
             })
             .catch((e) => {
-                console.log("tab's url is not in the blocked list");
                 reject("tab's url is not in the blocked list");
             })
         });
@@ -61,9 +60,21 @@ export default class urlUtil {
     closeAllCurrentBlockedUrlTabs() {
         chrome.tabs.query({}, (tabs) => {
             let urls_list =  tabs.map(async (tab) => {
-                 return this.closeBlockedUrlTab(tab);
+                 return await this.closeBlockedUrlTab(tab);
             });
-            dbController.set({restore_tabs_url_list: urls_list});
+            let closed_blocked_url_list=[];
+            tabs.map(async (tab) => {
+                try{
+                   let resDb = await dbController.get(this.getHostname(tab.url));
+                    let len = Object.keys(resDb);
+                    console.log("len",len);
+                    if(len.length>0)
+                        closed_blocked_url_list.push(tab.url);
+                }
+                catch (e) {}
+            });
+            console.log("see",closed_blocked_url_list);
+            dbController.set({restore_tabs_url_list: closed_blocked_url_list});
         });
     }
     restoreAllClosedwithCloseAllTabs() {
