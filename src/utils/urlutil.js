@@ -62,19 +62,43 @@ export default class urlUtil {
             let urls_list =  tabs.map(async (tab) => {
                  return await this.closeBlockedUrlTab(tab);
             });
-            let closed_blocked_url_list=[];
-            tabs.map(async (tab) => {
-                try{
-                   let resDb = await dbController.get(this.getHostname(tab.url));
-                    let len = Object.keys(resDb);
-                    console.log("len",len);
-                    if(len.length>0)
-                        closed_blocked_url_list.push(tab.url);
-                }
-                catch (e) {}
-            });
-            console.log("see",closed_blocked_url_list);
-            dbController.set({restore_tabs_url_list: closed_blocked_url_list});
+            Promise.resolve(1).then((res)=>{
+                return tabs.map(async (tab)=>{
+                    let result = {
+                        domain: null,
+                        url: null,
+                        dbDomain: null
+                    };
+                    let domain = this.getHostname(tab.url);
+                    let dbData;
+                    try{
+                         dbData = await dbController.get(domain);
+                         let keys = Object.keys(dbData);
+                         if(keys.length>0) {
+                             result= {
+                                 domain: domain,
+                                 url: tab.url,
+                                 dbDomain: keys[0]
+                             };
+                         }
+                    }catch (e) {
+                    }
+                    return result;
+                });
+            })
+            .then((dom_url_db_data)=>{
+                return dom_url_db_data.map(obj=>{
+                    if( obj.dbDomain && obj.domain && obj.domain === obj.dbDomain)
+                        return obj.url;
+                });
+            })
+            .then((res_to_save)=>{
+                console.log("res_to_save",res_to_save);
+                dbController.set({restore_tabs_url_list: res_to_save});
+            })
+            .catch((e)=>{
+                console.log(e);
+            })
         });
     }
     restoreAllClosedwithCloseAllTabs() {

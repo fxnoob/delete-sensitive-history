@@ -47,6 +47,7 @@ export class Home extends React.Component {
         .then((domain)=>{
             console.log(domain);
             return dBController.get(domain);
+
         })
         .then((res)=>{
             console.log("getCurrentOpenedTabHostName",res);
