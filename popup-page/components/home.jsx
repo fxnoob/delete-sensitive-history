@@ -107,12 +107,12 @@ export class Home extends React.Component {
     handleCloseAll(){
         urlUtilController.closeAllCurrentBlockedUrlTabs()
             .then((res)=>{
-                if(res.length>0)
-                    this.setState({isAllclosedTabsSet: true});
+
             })
             .catch((e)=>{
 
             });
+        this.setState({isAllclosedTabsSet: true});
     }
     handleRestoreAll(){
         urlUtilController.restoreAllClosedwithCloseAllTabs();
