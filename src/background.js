@@ -5,6 +5,9 @@ import dB from "./utils/db";
 
 const urlUtilsController = new urlUtils();
 const dbController = new dB();
+let ActiveTabDetails = {
+    tabId : null
+}
 
 dbController.get("isFirstTimeLoad").then((res) => {
     if(res === undefined) {
@@ -30,7 +33,7 @@ chrome.history.onVisited.addListener(function (details) {
 });
 
 chrome.tabs.onActivated.addListener((activeTabDetail)=>{
-    console.log(activeTabDetail);
+    ActiveTabDetails.tabId =  activeTabDetail.tabId;
     chrome.tabs.get(activeTabDetail.tabId , (tab) => {
         dbController.get(urlUtilsController.getHostname(tab.url)).then((res)=>{
             const key = Object.keys(res);
@@ -46,16 +49,19 @@ chrome.tabs.onActivated.addListener((activeTabDetail)=>{
 
 });
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    chrome.tabs.get(tabId , (tab) => {
-        dbController.get(urlUtilsController.getHostname(tab.url)).then((res)=>{
-            const key = Object.keys(res);
-            if(key.length>0)
-                chrome.browserAction.setBadgeText({text: '♥'});
-            else
+    console.log("onUpdated",tabId);
+    if(tabId === ActiveTabDetails.tabId) {
+        chrome.tabs.get(tabId , (tab) => {
+            dbController.get(urlUtilsController.getHostname(tab.url)).then((res)=>{
+                const key = Object.keys(res);
+                if(key.length>0)
+                    chrome.browserAction.setBadgeText({text: '♥'});
+                else
+                    chrome.browserAction.setBadgeText({text: ''});
+            }).catch((e)=>{
+                console.log("else ",e);
                 chrome.browserAction.setBadgeText({text: ''});
-        }).catch((e)=>{
-            console.log("else ",e);
-            chrome.browserAction.setBadgeText({text: ''});
-        })
-    });
+            })
+        });
+    }
 });
