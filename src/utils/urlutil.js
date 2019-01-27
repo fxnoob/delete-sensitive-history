@@ -58,55 +58,73 @@ export default class urlUtil {
         });
     }
     closeAllCurrentBlockedUrlTabs() {
-        chrome.tabs.query({}, (tabs) => {
-            let urls_list =  tabs.map(async (tab) => {
-                 return await this.closeBlockedUrlTab(tab);
-            });
-            Promise.resolve(1).then((res)=>{
-                return tabs.map(async (tab)=>{
-                    let result = {
-                        domain: null,
-                        url: null,
-                        dbDomain: null
-                    };
-                    let domain = this.getHostname(tab.url);
-                    let dbData;
-                    try{
-                         dbData = await dbController.get(domain);
-                         let keys = Object.keys(dbData);
-                         if(keys.length>0) {
-                             result= {
-                                 domain: domain,
-                                 url: tab.url,
-                                 dbDomain: keys[0]
-                             };
-                         }
-                    }catch (e) {
+        return new Promise((resolve, reject) => {
+            chrome.tabs.query({}, (tabs) => {
+                let urls_list =  tabs.map(async (tab) => {
+                    try {
+                        await this.closeBlockedUrlTab(tab);
                     }
-                    return result;
+                    catch (e) {}
                 });
+                Promise.resolve(1).then((res)=>{
+                    const promises = tabs.map(async (tab)=>{
+                        let result = {
+                            domain: this.getHostname(tab.url),
+                            url: tab.url,
+                            dbDomain: null
+                        };
+                        let domain = this.getHostname(tab.url);
+                        let dbData;
+                        try{
+                            dbData = await dbController.get(domain);
+                            console.log("dbData",dbData);
+                            let keys = Object.keys(dbData);
+                            if(keys.length>0) {
+                                result= {
+                                    domain: domain,
+                                    url: tab.url,
+                                    dbDomain: keys[0]
+                                };
+                            }
+                        }catch (e) {
+                        }
+                        return result;
+                    });
+                    return Promise.all(promises);
+                })
+                    .then((dom_url_db_data)=>{
+                        return dom_url_db_data.map((obj)=>{
+                            if( obj.dbDomain && obj.domain && obj.domain === obj.dbDomain)
+                                return obj.url;
+                        })
+                    })
+                    .then((resFinal)=>{
+                        console.log("res_to_save",resFinal);
+                        return dbController.set({restore_tabs_url_list: resFinal});
+                    })
+                    .then((resFinal)=>{
+                        resolve(resFinal.restore_tabs_url_list);
+                    })
+                    .catch((e)=>{
+                        reject(e);
+                    });
             })
-            .then((dom_url_db_data)=>{
-                return dom_url_db_data.map(obj=>{
-                    if( obj.dbDomain && obj.domain && obj.domain === obj.dbDomain)
-                        return obj.url;
-                });
-            })
-            .then((res_to_save)=>{
-                console.log("res_to_save",res_to_save);
-                dbController.set({restore_tabs_url_list: res_to_save});
-            })
-            .catch((e)=>{
-                console.log(e);
-            })
+                .catch((e)=>{
+                    reject(e);
+                })
         });
     }
+
     restoreAllClosedwithCloseAllTabs() {
-        dbController.get("restore_tabs_url_list")
+        return dbController.get("restore_tabs_url_list")
         .then((urls)=>{
-            urls.map(url=>{
-                chrome.tabs.create({'url': url}, (tab) => {});
+             urls.restore_tabs_url_list.map(url=>{
+                if(url)
+                    chrome.tabs.create({'url': url,active: false}, (tab) => {});
             });
+        })
+        .then((res)=>{
+            dbController.remove("restore_tabs_url_list");
         })
         .catch((e)=>{
             console.log(e);

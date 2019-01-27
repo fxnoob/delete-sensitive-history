@@ -9,7 +9,6 @@ import {withStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import urlUtil from '../../src/utils/urlutil';
 import dB from '../../src/utils/db';
-
 const urlUtilController = new urlUtil();
 const dBController = new dB();
 
@@ -39,6 +38,8 @@ export class Home extends React.Component {
     };
     constructor(props){
         super(props);
+        this.handleCloseAll = this.handleCloseAll.bind(this);
+        this.handleRestoreAll = this.handleRestoreAll.bind(this);
         this.handleIncludeUrlChange = this.handleIncludeUrlChange.bind(this);
     }
     componentDidMount() {
@@ -103,6 +104,20 @@ export class Home extends React.Component {
             chrome.browserAction.setBadgeText({text: ''});
 
     }
+    handleCloseAll(){
+        urlUtilController.closeAllCurrentBlockedUrlTabs()
+            .then((res)=>{
+                if(res.length>0)
+                    this.setState({isAllclosedTabsSet: true});
+            })
+            .catch((e)=>{
+
+            });
+    }
+    handleRestoreAll(){
+        urlUtilController.restoreAllClosedwithCloseAllTabs();
+        this.setState({isAllclosedTabsSet: false});
+    }
     render() {
         const { classes } = this.props;
         return(
@@ -130,7 +145,7 @@ export class Home extends React.Component {
                       <FormGroup row>
                           <FormControlLabel
                               control={
-                                  <Button variant="outlined" onClick={()=>urlUtilController.closeAllCurrentBlockedUrlTabs()} color="secondary" className={classes.button}>
+                                  <Button variant="outlined" onClick={()=>this.handleCloseAll()} color="secondary" className={classes.button}>
                                       Close All
                                   </Button>
                               }
@@ -145,7 +160,7 @@ export class Home extends React.Component {
                       <FormGroup row>
                           <FormControlLabel
                               control={
-                                  <Button variant="outlined" onClick={()=>urlUtilController.restoreAllClosedwithCloseAllTabs()} color="secondary" className={classes.button}>
+                                  <Button variant="outlined" onClick={()=>this.handleRestoreAll()} color="secondary" className={classes.button}>
                                       Restore closed tabs
                                   </Button>
                               }
