@@ -27,7 +27,7 @@ export default class urlUtil {
         });
     };
     async checkIfIncognitoTabIsOpened(){
-        let totalResolved = 0;
+        let totalResolved =0;
         return new Promise((resolve, reject) => {
             chrome.tabs.query({}, async (tabs) => {
                 for (const tab of tabs) {
