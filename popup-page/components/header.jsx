@@ -8,7 +8,6 @@ import IconButton from '@material-ui/core/IconButton';
 import SvgIcon from '@material-ui/core/SvgIcon';
 const styles = {
     root: {
-        backgroundColor:'#1e2238',
         flexGrow: 1,
         height: 41
     },

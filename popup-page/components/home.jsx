@@ -19,7 +19,6 @@ const styles = theme => ({
         paddingBottom: theme.spacing.unit * 1.5,
     },
     Paper:{
-       backgroundColor:'#687777',
         ...theme.mixins.gutters(),
         paddingTop: theme.spacing.unit * 1.5,
         paddingBottom: theme.spacing.unit * 1.5,
@@ -32,8 +31,7 @@ const styles = theme => ({
     },
     button: {
         margin: theme.spacing.unit,
-        whiteSpace: 'nowrap',
-        color:'#1e2238'
+        whiteSpace: 'nowrap'
     }
 });
 export class Home extends React.Component {

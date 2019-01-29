@@ -51,6 +51,6 @@ module.exports = {
             "./src/data" ,
             "node_modules"
         ],
-        extensions: [".js" , ".jsx",".json",".jpg"]
+        extensions: [".js" , ".jsx",".json",".jpg",".svg"]
     }
 };
