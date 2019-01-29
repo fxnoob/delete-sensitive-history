@@ -26,6 +26,22 @@ export default class urlUtil {
             });
         });
     };
+    async checkIfIncognitoTabIsOpened(){
+        let totalResolved = 0;
+        return new Promise((resolve, reject) => {
+            chrome.tabs.query({}, async (tabs) => {
+                for (const tab of tabs) {
+                    try {
+                        const p = await this.cleanUrl(tab.url);
+                        totalResolved++;
+                    }
+                    catch (e) {
+                    }
+                }
+                resolve(totalResolved);
+            });
+        });
+    }
     deleteUrlInHistory(url) {
         return new Promise((resolve, reject) => {
             const promise = this.cleanUrl(this.getHostname(url));

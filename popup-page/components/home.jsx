@@ -38,9 +38,41 @@ export class Home extends React.Component {
 
     state = {
         checkBox: false,
+        showCloseAlltab: false,
         checkBoxLabelValue: "Select this url to hide from history.",
         isAllclosedTabsSet: false
     };
+    handleIncludeUrlChange() {
+        urlUtilController.getCurrentOpenedTabHostName()
+            .then((res)=>{
+                if(this.state.checkBox === false) {
+                    console.log("checkbox not checked" , this.state.checkBox);
+                    let putData = {};
+                    putData[res] = "";
+                    dBController.set(putData).then((resss)=>{
+                        console.log(resss);
+                        const checkBoxVal = this.state.checkBox;
+                        let checkBoxLabel = (checkBoxVal===false)?"This Domain is in Hidden mode":"Select this domain to hide from history.";
+                        this.setState({checkBox: !this.state.checkBox , checkBoxLabelValue: checkBoxLabel});
+                    }).catch((ee)=>{
+                    });
+                }
+                else {
+                    dBController.remove(res).then((res_str)=>{
+                        console.log("remove",res);
+                        this.setState({checkBox: false,checkBoxLabelValue: "Select this domain to hide from history."});
+                    })
+                }
+            }).catch((e)=>{
+            alert(e);
+        });
+        if(!this.state.checkBox) {
+            this.setState({showCloseAlltab:true});
+            chrome.browserAction.setBadgeText({text: '♥'});
+        }
+    else
+        chrome.browserAction.setBadgeText({text: ''});
+    }
     constructor(props){
         super(props);
         this.handleCloseAll = this.handleCloseAll.bind(this);
@@ -77,37 +109,20 @@ export class Home extends React.Component {
         }).catch((e)=>{
             console.log(e);
         });
-    }
-    handleIncludeUrlChange() {
-        urlUtilController.getCurrentOpenedTabHostName()
-        .then((res)=>{
-            if(this.state.checkBox === false) {
-                console.log("checkbox not checked" , this.state.checkBox);
-                let putData = {};
-                putData[res] = "";
-                dBController.set(putData).then((resss)=>{
-                    console.log(resss);
-                    const checkBoxVal = this.state.checkBox;
-                    let checkBoxLabel = (checkBoxVal===false)?"This Domain is in Hidden mode":"Select this domain to hide from history.";
-                    this.setState({checkBox: !this.state.checkBox , checkBoxLabelValue: checkBoxLabel});
-                }).catch((ee)=>{
-
-                });
-            }
-            else {
-                dBController.remove(res).then((res_str)=>{
-                    console.log("remove",res);
-                    this.setState({checkBox: false,checkBoxLabelValue: "Select this domain to hide from history."});
-                })
-            }
-        }).catch((e)=>{
-            alert(e);
-        });
-        if(!this.state.checkBox)
-            chrome.browserAction.setBadgeText({text: '♥'});
-        else
-            chrome.browserAction.setBadgeText({text: ''});
-
+        //check for hidden tabs if opened
+        urlUtilController.checkIfIncognitoTabIsOpened()
+            .then(result=>{
+                console.log("showCloseAlltab ",result);
+                if(result>0){
+                    this.setState({showCloseAlltab: true});
+                }
+                else {
+                    this.setState({showCloseAlltab: false});
+                }
+            })
+            .catch(e=>{
+                console.log("checkIfIncognitoTabIsOpened ",e);
+            })
     }
     handleCloseAll(){
         urlUtilController.closeAllCurrentBlockedUrlTabs()
@@ -145,7 +160,7 @@ export class Home extends React.Component {
                   </Typography>
               </Paper>
               <Divider variant="middle" />
-               <Paper elevation={1}  className={classes.Paper}>
+               {this.state.showCloseAlltab && <Paper elevation={1}  className={classes.Paper}>
                   <Typography  variant="h5" component="h5">
                       <FormGroup row>
                           <FormControlLabel
@@ -158,7 +173,7 @@ export class Home extends React.Component {
                           />
                       </FormGroup>
                   </Typography>
-              </Paper>
+              </Paper>}
               <Divider variant="middle" />
               {this.state.isAllclosedTabsSet && <Paper elevation={1}  className={classes.Paper}>
                   <Typography  variant="h5" component="h5">
