@@ -18,6 +18,12 @@ const styles = theme => ({
         paddingTop: theme.spacing.unit * 1.5,
         paddingBottom: theme.spacing.unit * 1.5,
     },
+    Paper:{
+       backgroundColor:'#687777',
+        ...theme.mixins.gutters(),
+        paddingTop: theme.spacing.unit * 1.5,
+        paddingBottom: theme.spacing.unit * 1.5,
+    },
     fab: {
         margin: theme.spacing.unit,
     },
@@ -26,7 +32,8 @@ const styles = theme => ({
     },
     button: {
         margin: theme.spacing.unit,
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        color:'#1e2238'
     }
 });
 export class Home extends React.Component {
@@ -123,7 +130,7 @@ export class Home extends React.Component {
         return(
           <div>
               <h2>No need to open the url in incognito. ;)</h2>
-              <Paper elevation={1} className={classes.root}>
+              <Paper elevation={1} className={classes.Paper}>
                   <Typography variant="h5" component="h5">
                       <FormGroup row>
                           <FormControlLabel
@@ -140,7 +147,7 @@ export class Home extends React.Component {
                   </Typography>
               </Paper>
               <Divider variant="middle" />
-              <Paper elevation={1}  className={classes.root}>
+               <Paper elevation={1}  className={classes.Paper}>
                   <Typography  variant="h5" component="h5">
                       <FormGroup row>
                           <FormControlLabel
@@ -155,7 +162,7 @@ export class Home extends React.Component {
                   </Typography>
               </Paper>
               <Divider variant="middle" />
-              {this.state.isAllclosedTabsSet && <Paper elevation={1}  className={classes.root}>
+              {this.state.isAllclosedTabsSet && <Paper elevation={1}  className={classes.Paper}>
                   <Typography  variant="h5" component="h5">
                       <FormGroup row>
                           <FormControlLabel

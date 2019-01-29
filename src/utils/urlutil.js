@@ -92,22 +92,22 @@ export default class urlUtil {
                     });
                     return Promise.all(promises);
                 })
-                    .then((dom_url_db_data)=>{
-                        return dom_url_db_data.map((obj)=>{
-                            if( obj.dbDomain && obj.domain && obj.domain === obj.dbDomain)
-                                return obj.url;
-                        })
+                .then((dom_url_db_data)=>{
+                    return dom_url_db_data.map((obj)=>{
+                        if( obj.dbDomain && obj.domain && obj.domain === obj.dbDomain)
+                            return obj.url;
                     })
-                    .then((resFinal)=>{
-                        console.log("res_to_save",resFinal);
-                        return dbController.set({restore_tabs_url_list: resFinal});
-                    })
-                    .then((resFinal)=>{
-                        resolve(resFinal.restore_tabs_url_list);
-                    })
-                    .catch((e)=>{
-                        reject(e);
-                    });
+                })
+                .then((resFinal)=>{
+                    console.log("res_to_save",resFinal);
+                    return dbController.set({restore_tabs_url_list: resFinal});
+                })
+                .then((resFinal)=>{
+                    resolve(resFinal.restore_tabs_url_list);
+                })
+                .catch((e)=>{
+                    reject(e);
+                });
             })
                 .catch((e)=>{
                     reject(e);

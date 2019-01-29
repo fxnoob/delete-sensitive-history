@@ -7,7 +7,7 @@ const urlUtilsController = new urlUtils();
 const dbController = new dB();
 let ActiveTabDetails = {
     tabId : null
-}
+};
 
 dbController.get("isFirstTimeLoad").then((res) => {
     if(res === undefined) {
@@ -46,7 +46,6 @@ chrome.tabs.onActivated.addListener((activeTabDetail)=>{
             chrome.browserAction.setBadgeText({text: ''});
         })
     });
-
 });
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     console.log("onUpdated",tabId);
