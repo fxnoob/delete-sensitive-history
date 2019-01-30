@@ -44,7 +44,7 @@ export default class urlUtil {
     }
     deleteUrlInHistory(url) {
         return new Promise((resolve, reject) => {
-            const promise = this.cleanUrl(this.getHostname(url));
+            const promise = this.cleanUrl(urlUtil.getHostname(url));
             promise.then((res) => {
                 return res;
             })
@@ -63,7 +63,7 @@ export default class urlUtil {
         const that = this;
         console.log(tab.url);
         return new Promise((resolve, reject) => {
-            that.cleanUrl(that.getHostname(tab.url)).then((res) => {
+            that.cleanUrl(urlUtil.getHostname(tab.url)).then((res) => {
                 chrome.tabs.remove(tab.id, ()=> {
                     resolve(tab.url);
                 });
@@ -85,11 +85,11 @@ export default class urlUtil {
                 Promise.resolve(1).then((res)=>{
                     const promises = tabs.map(async (tab)=>{
                         let result = {
-                            domain: this.getHostname(tab.url),
+                            domain: urlUtil.getHostname(tab.url),
                             url: tab.url,
                             dbDomain: null
                         };
-                        let domain = this.getHostname(tab.url);
+                        let domain = urlUtil.getHostname(tab.url);
                         let dbData;
                         try{
                             dbData = await dbController.get(domain);
@@ -102,7 +102,8 @@ export default class urlUtil {
                                     dbDomain: keys[0]
                                 };
                             }
-                        }catch (e) {
+                        }
+                        catch (e) {
                         }
                         return result;
                     });
@@ -125,9 +126,9 @@ export default class urlUtil {
                     reject(e);
                 });
             })
-                .catch((e)=>{
-                    reject(e);
-                })
+            .catch((e)=>{
+                reject(e);
+            })
         });
     }
 
@@ -146,7 +147,7 @@ export default class urlUtil {
             console.log(e);
         })
     }
-    getHostname(url) {
+    static getHostname(url) {
         var result = "";
         var l = document.createElement("a");
         l.href = url;
@@ -158,7 +159,7 @@ export default class urlUtil {
         return new Promise((resolve, reject) => {
             try {
                 chrome.tabs.query({active: true, currentWindow: true }, (tabs)=>{
-                    resolve(this.getHostname(tabs[0].url));
+                    resolve(urlUtil.getHostname(tabs[0].url));
                 });
             }
             catch (e) {

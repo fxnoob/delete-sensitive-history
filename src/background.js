@@ -35,7 +35,7 @@ chrome.history.onVisited.addListener(function (details) {
 chrome.tabs.onActivated.addListener((activeTabDetail)=>{
     ActiveTabDetails.tabId =  activeTabDetail.tabId;
     chrome.tabs.get(activeTabDetail.tabId , (tab) => {
-        dbController.get(urlUtilsController.getHostname(tab.url)).then((res)=>{
+        dbController.get(urlUtil.getHostname(tab.url)).then((res)=>{
             const key = Object.keys(res);
             if(key.length>0)
                 chrome.browserAction.setBadgeText({text: '♥'});
@@ -51,7 +51,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     console.log("onUpdated",tabId);
     if(tabId === ActiveTabDetails.tabId) {
         chrome.tabs.get(tabId , (tab) => {
-            dbController.get(urlUtilsController.getHostname(tab.url)).then((res)=>{
+            dbController.get(urlUtil.getHostname(tab.url)).then((res)=>{
                 const key = Object.keys(res);
                 if(key.length>0)
                     chrome.browserAction.setBadgeText({text: '♥'});
