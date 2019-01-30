@@ -60,10 +60,9 @@ export default class urlUtil {
         });
     }
     closeBlockedUrlTab(tab) {
-        const that = this;
         console.log(tab.url);
         return new Promise((resolve, reject) => {
-            that.cleanUrl(urlUtil.getHostname(tab.url)).then((res) => {
+            this.cleanUrl(urlUtil.getHostname(tab.url)).then((res) => {
                 chrome.tabs.remove(tab.id, ()=> {
                     resolve(tab.url);
                 });
