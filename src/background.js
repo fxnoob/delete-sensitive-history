@@ -17,11 +17,11 @@ dbController.get("isFirstTimeLoad").then((res) => {
     }
 })
 .catch((e)=>{
-
 });
 
+//when new url is updated in the history
 chrome.history.onVisited.addListener(function (details) {
-   // urlUtilsController.closeAllCurrentBlockedUrlTabs();
+    console.log("chrome.history.onVisited",details.url);
     const promise = urlUtilsController.deleteUrlInHistory(details.url);
     console.log(details.url);
     promise.then((res) => {
@@ -31,27 +31,13 @@ chrome.history.onVisited.addListener(function (details) {
         console.log(e);
     });
 });
-
+//when active tab is changed
 chrome.tabs.onActivated.addListener((activeTabDetail)=>{
     ActiveTabDetails.tabId =  activeTabDetail.tabId;
     chrome.tabs.get(activeTabDetail.tabId , (tab) => {
-        dbController.get(urlUtil.getHostname(tab.url)).then((res)=>{
-            const key = Object.keys(res);
-            if(key.length>0)
-                chrome.browserAction.setBadgeText({text: '♥'});
-            else
-                chrome.browserAction.setBadgeText({text: ''});
-        }).catch((e)=>{
-            console.log("else ",e);
-            chrome.browserAction.setBadgeText({text: ''});
-        })
-    });
-});
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    console.log("onUpdated",tabId);
-    if(tabId === ActiveTabDetails.tabId) {
-        chrome.tabs.get(tabId , (tab) => {
-            dbController.get(urlUtil.getHostname(tab.url)).then((res)=>{
+        console.log("chrome.tabs.onActivated.",tab.url);
+        if(tab.url!==undefined) {
+            dbController.get(urlUtils.getHostname(tab.url!==undefined?tab.url:'')).then((res)=>{
                 const key = Object.keys(res);
                 if(key.length>0)
                     chrome.browserAction.setBadgeText({text: '♥'});
@@ -61,6 +47,33 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
                 console.log("else ",e);
                 chrome.browserAction.setBadgeText({text: ''});
             })
+        }
+        else {
+            chrome.browserAction.setBadgeText({text: ''});
+        }
+    });
+});
+//when active tab is updated eg navigating to new url in active tab
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    if(tabId!== undefined && tabId === ActiveTabDetails.tabId) {
+        chrome.tabs.get(tabId , (tab) => {
+            if(tab.url!==undefined) {
+                dbController.get(urlUtils.getHostname(tab.url!==undefined?tab.url:''))
+                    .then((res)=>{
+                        const key = Object.keys(res);
+                        if(key.length>0)
+                            chrome.browserAction.setBadgeText({text: '♥'});
+                        else
+                            chrome.browserAction.setBadgeText({text: ''});
+                    })
+                    .catch((e)=>{
+                        console.log("else ",e);
+                        chrome.browserAction.setBadgeText({text: ''});
+                    })
+            }
         });
+    }
+    else {
+        chrome.browserAction.setBadgeText({text: ''});
     }
 });

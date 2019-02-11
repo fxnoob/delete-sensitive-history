@@ -69,13 +69,16 @@ export class Home extends React.Component {
             })
             .catch((e)=>{
                 alert(e);
+                this.setState({checkBox: false});
             });
-            if(!this.state.checkBox) {
+            if(this.state.checkBox === true) {
                 this.setState({showCloseAlltab:true});
                 chrome.browserAction.setBadgeText({text: '♥'});
             }
             else {
-                    this.setState({showCloseAlltab:false});
+                    /*
+                    * check if any other incognito tab is opened
+                    */
                     chrome.browserAction.setBadgeText({text: ''});
             }
     }
@@ -117,11 +120,11 @@ export class Home extends React.Component {
         urlUtilController.checkIfIncognitoTabIsOpened()
             .then(result=>{
                 console.log("showCloseAlltab ",result);
-                if(result>0){
+                if(result>1){
                     this.setState({showCloseAlltab: true});
                 }
                 else {
-                    this.setState({showCloseAlltab: true});
+                    this.setState({showCloseAlltab: false});
                 }
             })
             .catch(e=>{
