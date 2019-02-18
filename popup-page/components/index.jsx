@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import  ParticleComponent  from './particles';
-
 import Home from "./home";
 import Header from './header';
 const styles = {
@@ -48,7 +47,6 @@ class MenuAppBar extends React.Component {
                 >
                     <Header/>
                     <Home/>
-                    {/* You can render <Route> and <NavTabs /> here */}
                 </div>
             </div>
         );

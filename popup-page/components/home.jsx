@@ -7,6 +7,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import {withStyles} from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
+import ParticleButton from "./button";
 import urlUtil from '../../src/utils/urlutil';
 import dB from '../../src/utils/db';
 const urlUtilController = new urlUtil();
@@ -40,17 +41,20 @@ export class Home extends React.Component {
         checkBox: false,
         showCloseAlltab: false,
         checkBoxLabelValue: "Select this url to hide from history.",
-        isAllclosedTabsSet: false
+        isAllclosedTabsSet: false,
+        closeAllParticlebutton: false,
+        restoreAllParticlebutton: false
     };
     handleIncludeUrlChange() {
+        console.log("this.state.checkBox", this.state.checkBox);
         urlUtilController.getCurrentOpenedTabHostName()
             .then((res)=>{
-                if(this.state.checkBox === false) {
+                if(this.state.checkBox=== false) {
                     console.log("checkbox not checked" , this.state.checkBox);
                     let putData = {};
-                    putData[res] = "";
+                    putData[res] = "getCurrentOpenedTabHostName";
                     dBController.set(putData).then((resss)=>{
-                        console.log(resss);
+                        console.log("" , resss);
                         const checkBoxVal = this.state.checkBox;
                         let checkBoxLabel = (checkBoxVal===false)?"This Domain is in Hidden mode":"Select this domain to hide from history.";
                         this.setState({checkBox: !this.state.checkBox , checkBoxLabelValue: checkBoxLabel});
@@ -63,15 +67,21 @@ export class Home extends React.Component {
                         this.setState({checkBox: false,checkBoxLabelValue: "Select this domain to hide from history."});
                     })
                 }
-            }).catch((e)=>{
-            alert(e);
-        });
-        if(!this.state.checkBox) {
-            this.setState({showCloseAlltab:true});
-            chrome.browserAction.setBadgeText({text: '♥'});
-        }
-    else
-        chrome.browserAction.setBadgeText({text: ''});
+            })
+            .catch((e)=>{
+                alert(e);
+                this.setState({checkBox: false});
+            });
+            if(this.state.checkBox === true) {
+                this.setState({showCloseAlltab:true});
+                chrome.browserAction.setBadgeText({text: '♥'});
+            }
+            else {
+                    /*
+                    * check if any other incognito tab is opened
+                    */
+                    chrome.browserAction.setBadgeText({text: ''});
+            }
     }
     constructor(props){
         super(props);
@@ -83,9 +93,8 @@ export class Home extends React.Component {
         //check if current tab is in hidden mode if yes then get settings
         urlUtilController.getCurrentOpenedTabHostName()
         .then((domain)=>{
-            console.log(domain);
-            return dBController.get(domain);
-
+            if(domain!== undefined)
+                return dBController.get(domain);
         })
         .then((res)=>{
             console.log("getCurrentOpenedTabHostName",res);
@@ -101,9 +110,8 @@ export class Home extends React.Component {
         }).catch((e)=>{
             alert(e);
         });
-        //check if there is any tabs session is in the storage
+        //check if there any closed_tabs session is in the storage
         dBController.get("restore_tabs_url_list").then((dbres)=>{
-            console.log("cdm",dbres);
             if(dbres.restore_tabs_url_list.length>0)
                 this.setState({isAllclosedTabsSet: true});
         }).catch((e)=>{
@@ -113,7 +121,7 @@ export class Home extends React.Component {
         urlUtilController.checkIfIncognitoTabIsOpened()
             .then(result=>{
                 console.log("showCloseAlltab ",result);
-                if(result>0){
+                if(result>1){
                     this.setState({showCloseAlltab: true});
                 }
                 else {
@@ -121,10 +129,11 @@ export class Home extends React.Component {
                 }
             })
             .catch(e=>{
-                console.log("checkIfIncognitoTabIsOpened ",e);
-            })
+                console.log("checkIfIncognitoTabIsOpened",e);
+            });
     }
     handleCloseAll(){
+        this.setState({closeAllParticlebutton: true,restoreAllParticlebutton: false});
         urlUtilController.closeAllCurrentBlockedUrlTabs()
             .then((res)=>{
 
@@ -135,8 +144,14 @@ export class Home extends React.Component {
         this.setState({isAllclosedTabsSet: true});
     }
     handleRestoreAll(){
+        setTimeout(()=>{
+            this.setState({
+                isAllclosedTabsSet: false,
+                closeAllParticlebutton:false,
+                restoreAllParticlebutton: true
+            });
+        },1000);
         urlUtilController.restoreAllClosedwithCloseAllTabs();
-        this.setState({isAllclosedTabsSet: false});
     }
     render() {
         const { classes } = this.props;
@@ -166,7 +181,7 @@ export class Home extends React.Component {
                           <FormControlLabel
                               control={
                                   <Button variant="outlined" onClick={()=>this.handleCloseAll()} color="secondary" className={classes.button}>
-                                      Close All
+                                      <ParticleButton hidden={this.state.closeAllParticlebutton} label="Close All" color="#0000ff"/>
                                   </Button>
                               }
                               label="Close all tabs that are in hidden mode."

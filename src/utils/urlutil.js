@@ -6,8 +6,13 @@ export default class urlUtil {
         console.log(url);
         return new Promise((resolve, reject) => {
             try {
-                chrome.history.deleteUrl({url: url});
-                resolve('Ok');
+                if(url!==undefined) {
+                    chrome.history.deleteUrl({url: url});
+                    resolve('Ok');
+                }
+                else {
+                    reject("Undefined url");
+                }
             }
             catch (e) {
                 reject(e);
@@ -29,22 +34,28 @@ export default class urlUtil {
     async checkIfIncognitoTabIsOpened(){
         let totalResolved =0;
         return new Promise((resolve, reject) => {
-            chrome.tabs.query({}, async (tabs) => {
-                for (const tab of tabs) {
-                    try {
-                        const p = await this.cleanUrl(tab.url);
-                        totalResolved++;
+            let totalResolved = 0;
+            this.getAllTabs()
+                .then(async (tabswithidurl)=>{
+                    for (const tabwithidurl of tabswithidurl) {
+                        try {
+                            let p = await this.cleanUrl(urlUtil.getHostname(tabwithidurl.tabUrl));
+                            if(p === "DELETE")
+                                totalResolved++;
+                        }
+                        catch (e) {
+                        }
                     }
-                    catch (e) {
-                    }
-                }
-                resolve(totalResolved);
-            });
+                    resolve(totalResolved);
+                })
+                .catch(e=>{
+
+                });
         });
     }
     deleteUrlInHistory(url) {
         return new Promise((resolve, reject) => {
-            const promise = this.cleanUrl(this.getHostname(url));
+            const promise = this.cleanUrl(urlUtil.getHostname(url));
             promise.then((res) => {
                 return res;
             })
@@ -60,17 +71,20 @@ export default class urlUtil {
         });
     }
     closeBlockedUrlTab(tab) {
-        const that = this;
         console.log(tab.url);
         return new Promise((resolve, reject) => {
-            that.cleanUrl(that.getHostname(tab.url)).then((res) => {
-                chrome.tabs.remove(tab.id, ()=> {
-                    resolve(tab.url);
-                });
-            })
-            .catch((e) => {
-                reject("tab's url is not in the blocked list");
-            })
+            if(!tab.url)
+                reject("no valid url");
+            else {
+                this.cleanUrl(urlUtil.getHostname(tab.url)).then((res) => {
+                    chrome.tabs.remove(tab.id, ()=> {
+                        resolve(tab.url);
+                    });
+                })
+                .catch((e) => {
+                    reject("tab's url is not in the blocked list");
+                })
+            }
         });
     }
     closeAllCurrentBlockedUrlTabs() {
@@ -85,11 +99,11 @@ export default class urlUtil {
                 Promise.resolve(1).then((res)=>{
                     const promises = tabs.map(async (tab)=>{
                         let result = {
-                            domain: this.getHostname(tab.url),
+                            domain: urlUtil.getHostname(tab.url),
                             url: tab.url,
                             dbDomain: null
                         };
-                        let domain = this.getHostname(tab.url);
+                        let domain = urlUtil.getHostname(tab.url);
                         let dbData;
                         try{
                             dbData = await dbController.get(domain);
@@ -102,7 +116,8 @@ export default class urlUtil {
                                     dbDomain: keys[0]
                                 };
                             }
-                        }catch (e) {
+                        }
+                        catch (e) {
                         }
                         return result;
                     });
@@ -125,9 +140,9 @@ export default class urlUtil {
                     reject(e);
                 });
             })
-                .catch((e)=>{
-                    reject(e);
-                })
+            .catch((e)=>{
+                reject(e);
+            })
         });
     }
 
@@ -146,24 +161,57 @@ export default class urlUtil {
             console.log(e);
         })
     }
-    getHostname(url) {
-        var result = "";
-        var l = document.createElement("a");
-        l.href = url;
-        var host = l.hostname.split(".");
-        var len = host.length;
-        return host[len-2];
+    static getHostname(url) {
+        if(url===undefined || url  === null) {
+            return null;
+        }
+        else {
+            var result = "";
+            var l = document.createElement("a");
+            l.href = url;
+            var host = l.hostname.split(".");
+            var len = host.length;
+            return host[len-2];
+        }
     };
     getCurrentOpenedTabHostName() {
         return new Promise((resolve, reject) => {
             try {
                 chrome.tabs.query({active: true, currentWindow: true }, (tabs)=>{
-                    resolve(this.getHostname(tabs[0].url));
+                    if(tabs[0].url === undefined || tabs[0].url === null)
+                        reject("Null or Undefined url");
+                    else
+                        resolve(urlUtil.getHostname(tabs[0].url));
                 });
             }
             catch (e) {
                 reject(e);
             }
+        });
+    }
+    /*
+   * set badge on action icon
+   * */
+    setBadgeOnActionIcon(badge) {
+        chrome.browserAction.setBadgeText({text: badge});
+    }
+    /*
+    * get all tabs with valid urls
+    * */
+    getAllTabs(params={}) {
+        return new Promise((resolve, reject)=>{
+            let tabWithValidUrl = [];
+            chrome.tabs.query(params, (tabs)=> {
+                tabWithValidUrl = tabs.filter((tab)=> {
+                    if(tab.url !== undefined && tab.url !== null ) {
+                        return {
+                            tabUrl: tab.url ,
+                            tabId: tab.tabId
+                        };
+                    }
+                });
+                resolve(tabWithValidUrl);
+            });
         });
     }
 };
