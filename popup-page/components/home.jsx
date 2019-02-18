@@ -46,14 +46,15 @@ export class Home extends React.Component {
         restoreAllParticlebutton: false
     };
     handleIncludeUrlChange() {
+        console.log("this.state.checkBox", this.state.checkBox);
         urlUtilController.getCurrentOpenedTabHostName()
             .then((res)=>{
-                if(this.state.checkBox === false) {
+                if(this.state.checkBox=== false) {
                     console.log("checkbox not checked" , this.state.checkBox);
                     let putData = {};
-                    putData[res] = "";
+                    putData[res] = "getCurrentOpenedTabHostName";
                     dBController.set(putData).then((resss)=>{
-                        console.log(resss);
+                        console.log("" , resss);
                         const checkBoxVal = this.state.checkBox;
                         let checkBoxLabel = (checkBoxVal===false)?"This Domain is in Hidden mode":"Select this domain to hide from history.";
                         this.setState({checkBox: !this.state.checkBox , checkBoxLabelValue: checkBoxLabel});
@@ -92,8 +93,8 @@ export class Home extends React.Component {
         //check if current tab is in hidden mode if yes then get settings
         urlUtilController.getCurrentOpenedTabHostName()
         .then((domain)=>{
-            console.log(domain);
-            return dBController.get(domain);
+            if(domain!== undefined)
+                return dBController.get(domain);
         })
         .then((res)=>{
             console.log("getCurrentOpenedTabHostName",res);

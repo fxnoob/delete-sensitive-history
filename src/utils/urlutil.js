@@ -6,8 +6,13 @@ export default class urlUtil {
         console.log(url);
         return new Promise((resolve, reject) => {
             try {
-                chrome.history.deleteUrl({url: url});
-                resolve('Ok');
+                if(url!==undefined) {
+                    chrome.history.deleteUrl({url: url});
+                    resolve('Ok');
+                }
+                else {
+                    reject("Undefined url");
+                }
             }
             catch (e) {
                 reject(e);
@@ -157,8 +162,9 @@ export default class urlUtil {
         })
     }
     static getHostname(url) {
-        if(url===undefined)
+        if(url===undefined || url  === null) {
             return null;
+        }
         else {
             var result = "";
             var l = document.createElement("a");
@@ -172,7 +178,10 @@ export default class urlUtil {
         return new Promise((resolve, reject) => {
             try {
                 chrome.tabs.query({active: true, currentWindow: true }, (tabs)=>{
-                    resolve(urlUtil.getHostname(tabs[0].url));
+                    if(tabs[0].url === undefined || tabs[0].url === null)
+                        reject("Null or Undefined url");
+                    else
+                        resolve(urlUtil.getHostname(tabs[0].url));
                 });
             }
             catch (e) {

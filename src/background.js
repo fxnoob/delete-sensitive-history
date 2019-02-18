@@ -8,7 +8,7 @@ const dbController = new dB();
 let ActiveTabDetails = {
     tabId : null
 };
-
+//when extension is loaded first time
 dbController.get("isFirstTimeLoad").then((res) => {
     if(res === undefined) {
         dbController.set(JsonData.blocked_sites).then(() => {
