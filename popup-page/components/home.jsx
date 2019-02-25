@@ -69,7 +69,7 @@ export class Home extends React.Component {
                 }
             })
             .catch((e)=>{
-                alert(e);
+                console.log(e);
                 this.setState({checkBox: false});
             });
             if(this.state.checkBox === true) {
@@ -108,7 +108,7 @@ export class Home extends React.Component {
             else
                 this.setState({checkBox: false, checkBoxLabelValue: "Select this domain to hide from history."});
         }).catch((e)=>{
-            alert(e);
+            console.log(e);
         });
         //check if there any closed_tabs session is in the storage
         dBController.get("restore_tabs_url_list").then((dbres)=>{
