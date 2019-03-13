@@ -9,7 +9,7 @@ export default class Db {
     set(params) {
         return new Promise((resolve, reject) => {
             try {
-                    chrome.storage.sync.set(params, function(){
+                    chrome.storage.sync.set(params, ()=>{
                     resolve(params);
                 });
             }
@@ -25,7 +25,7 @@ export default class Db {
     get(params) {
         return new Promise((resolve, reject) => {
             try {
-                chrome.storage.sync.get(params, function(items){
+                chrome.storage.sync.get(params, (items)=>{
                    if(items === undefined)
                        reject("Error");
                    else

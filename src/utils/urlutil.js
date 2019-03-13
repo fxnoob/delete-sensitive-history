@@ -189,6 +189,21 @@ export default class urlUtil {
             }
         });
     }
+    getCurrentOpenedTabUrl() {
+        return new Promise((resolve, reject) => {
+            try {
+                chrome.tabs.query({active: true, currentWindow: true }, (tabs)=>{
+                    if(tabs[0].url === undefined || tabs[0].url === null)
+                        reject("Null or Undefined url");
+                    else
+                        resolve(tabs[0].url);
+                });
+            }
+            catch (e) {
+                reject(e);
+            }
+        });
+    }
     /*
    * set badge on action icon
    * */
