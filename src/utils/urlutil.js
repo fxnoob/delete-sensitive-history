@@ -32,7 +32,7 @@ export default class urlUtil {
         });
     };
     async checkIfIncognitoTabIsOpened(){
-        let totalResolved = 0;
+        let totalResolved =0;
         return new Promise((resolve, reject) => {
             let totalResolved = 0;
             this.getAllTabs()
