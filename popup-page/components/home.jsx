@@ -117,6 +117,7 @@ export class Home extends React.Component {
                     }).catch((ee)=>{});
                 } else {
                     /** when  check box is unchecked */
+                    dBController.remove(res).then((res_str)=>{}).catch(e=>console.log(e));
                     this.setState({checkBox: !this.state.checkBox , checkBoxLabelValue: "Select this domain to hide from history."});
                     chrome.browserAction.setBadgeText({text: ''});
                 }
